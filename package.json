@@ -1,0 +1,29 @@
+{
+  "name": "rbe_map",
+  "version": "1.0.0",
+  "description": "An interactive map for WPI Robotics Program",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OAkyildiz/rbe_map.git"
+  },
+  "keywords": [
+    "map",
+    "virtual",
+    "tour",
+    "wpi",
+    "robotics"
+  ],
+  "author": "Ozan Akyildiz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OAkyildiz/rbe_map/issues"
+  },
+  "homepage": "https://github.com/OAkyildiz/rbe_map#readme",
+  "dependencies": {
+    "ol": "^5.1.3"
+  }
+}
