@@ -1,0 +1,229 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.7997105,
+          42.2761592,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Jane Li",
+        "building": "85p",
+        "type": "office"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.7997098,
+          42.2761384,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Carlo Pincerolli",
+        "building": "85p",
+        "type": "office"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.7997071,
+          42.2761185,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Loris Fiscera",
+        "building": "85p",
+        "type": "office"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.7997057,
+          42.2760972,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Jie Fu",
+        "building": "85p",
+        "type": "office"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.7996984,
+          42.2760322,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Jing Xiao",
+        "building": "85p",
+        "type": "office"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.7998278,
+          42.275931,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Marko Popovic",
+        "building": "85p",
+        "type": "office"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.7998171,
+          42.2758943,
+          0
+        ]
+      },
+      "properties": {
+        "name": "David",
+        "building": "85p",
+        "type": "office"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.7997125,
+          42.2757489,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Hide",
+        "building": "85p",
+        "type": "office"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.7996468,
+          42.2757623,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Point 9",
+        "building": "85p",
+        "type": "office"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.7996555,
+          42.2758094,
+          0
+        ]
+      },
+      "properties": {
+        "name": "William Michalson",
+        "building": "85p",
+        "type": "office"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.7996629,
+          42.2758585,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Nicholas Bertozzi",
+        "building": "85p",
+        "type": "office"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.7996676,
+          42.2758873,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Craig Putnam",
+        "building": "85p",
+        "type": "office"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.8073125,
+          42.274186,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Kenneth Stafford",
+        "building": "higgins",
+        "type": "office"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.8073722,
+          42.2741681,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Bradley Miller",
+        "building": "higgins",
+        "type": "office"
+      }
+    }
+  ]
+}

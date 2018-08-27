@@ -1,0 +1,66 @@
+[
+ {
+   "latitude": 42.2751644,
+   "longitude": -71.8067814,
+   "Type": "Lab",
+   "Building": "Atwater Kent",
+   "Name": "AK 120",
+   "Description": "Undergraduate Classes"
+ },
+ {
+   "latitude": 42.2762088,
+   "longitude": -71.7997796,
+   "Type": "Lab",
+   "Building": "Prescott 85",
+   "Name": "CIBR Lab",
+   "Description": "Human Robot Interaction and Path Planning"
+ },
+ {
+   "latitude": 42.2760505,
+   "longitude": -71.8000035,
+   "Type": "Lab",
+   "Building": "Prescott 85",
+   "Name": "AIM Lab",
+   "Description": "Medical "
+ },
+ {
+   "latitude": 42.2761275,
+   "longitude": -71.7998258,
+   "Type": "Lab",
+   "Building": "Prescott 85",
+   "Name": "NEST Lab",
+   "Description": "Swarm"
+ },
+ {
+   "latitude": 42.2759325,
+   "longitude": -71.7997608,
+   "Type": "Lab",
+   "Building": "Prescott 85",
+   "Name": "Onal Shop",
+   "Description": ""
+ },
+ {
+   "latitude": 42.2759374,
+   "longitude": -71.799687,
+   "Type": "Lab",
+   "Building": "Prescott 85",
+   "Name": "Popovic Lab",
+   "Description": ""
+ },
+ {
+   "latitude": 42.2760843,
+   "longitude": -71.7998237,
+   "Type": "Lab",
+   "Building": "Prescott 85",
+   "Name": "Robotic Navigation and Communications Lab",
+   "Description": ""
+ },
+ {
+   "latitude": 42.2760476,
+   "longitude": -71.7997661,
+   "Type": "Lab",
+   "Building": "Prescott 85",
+   "Name": "COMET Lab",
+   "Description": ""
+ }
+]
