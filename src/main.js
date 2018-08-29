@@ -14,25 +14,27 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
-var wpi = {lat:42.2751, long:-71.8053, def_zoom:17};
+var wpi = {latLng: {lat:42.2751, lng:-71.8053}, def_zoom:16.5};
 var wpi_style = [{"featureType":"all","elementType":"labels.text.fill","stylers":[{"saturation":36},{"color":"#000000"},{"lightness":40}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"visibility":"on"},{"color":"#000000"},{"lightness":16}]},{"featureType":"all","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":17},{"weight":1.2}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"landscape.man_made","elementType":"geometry.fill","stylers":[{"color":"#785b5b"},{"visibility":"simplified"}]},{"featureType":"landscape.man_made","elementType":"labels.text.fill","stylers":[{"visibility":"simplified"},{"color":"#400707"}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":21}]},{"featureType":"poi.school","elementType":"geometry.fill","stylers":[{"color":"#4a1616"}]},{"featureType":"poi.sports_complex","elementType":"labels.text.fill","stylers":[{"color":"#350e0e"}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":17}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":29},{"weight":0.2}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":18}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":16}]},{"featureType":"road.local","elementType":"labels.text","stylers":[{"visibility":"off"}]},{"featureType":"road.local","elementType":"labels.text.fill","stylers":[{"hue":"#ff0000"}]},{"featureType":"transit","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":19}]},{"featureType":"water","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":17}]}];
 //TODO: Make symbosl for markers
 var markers={
   size: 10
-  , simple: {ico: 'res/ico/circle_ico.png', color: 'red'}
-  , lab: {ico: 'res/ico/tools.svg', color: '#902A20'}
-  , office: {ico: 'res/ico/desk.png', color: '#32607A'}
-  , project: {ico:'res/ico/gear.png', color:'#323232'}
-  , outlineColor: '#606060',
-  };
+  , types: new Map()
+  , outlineColor: '#606060'
+}
+markers.types['simple']= {ico: 'res/ico/circle_ico.png', color: 'red'};
+markers.types['lab']= {ico: 'res/ico/tools.svg', color: '#902A20'};
+markers.types['office']= {ico: 'res/ico/desk.png', color: '#32607A'};
+markers.types['project']= {ico:'res/ico/gear.png', color:'#323232'};
+
 
 
 var map;
 var build = true;
 function initMap(){
   map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: wpi.lat, lng: wpi.long},
-    zoom: 16.5,
+    center: wpi.latLng,
+    zoom: wpi.def_zoom,
     minZoom: 16,
     maxZoom: 19.5,
     zoomControl: true,
@@ -46,17 +48,16 @@ function initMap(){
     fullscreenControl: false,
     styles: wpi_style
   });
-    google.maps.Polygon.prototype.getPolygonBounds=function(){
-        var bounds = new google.maps.LatLngBounds()
-        this.getPath().forEach(function(element,index){bounds.extend(element)})
-        return bounds
-    }
-var buildings;
+
+var buildings = new Map();
 var labs;
 var offices;
 var path;
 
 var layers = new Map();
+
+map.addListener('click', function(event) { defaultView(map);});
+map.addListener('idle', function(event) {console.log('idle');});
 
 
 layers['buildings'] = new google.maps.Data();
@@ -64,26 +65,25 @@ layers['markers'] = new google.maps.Data();
 layers['path'] = new google.maps.Data();
 
 layers['buildings'].addListener('addfeature',function(e){
-  buildingCallback(e.feature) ;
+  buildingCallback(e.feature, buildings, map) ;
 });
+
+
 
 layers['buildings'].addListener('click', function(event) {
-  var feature = event.feature;
-  if(feature.getGeometry().getType()=='Polygon'){
-      feature.setProperty('focused', true); //set all others o false
-      var bound = feature.getPolygonBounds();
-      map.fitBounds(bounds);
-      console.log(feature.getProperty('name'));
-    }
-    else{
-    console.log('?');
-    }
+  focusBuilding(event, layers['buildings']);
+  });
+layers['buildings'].addListener('mouseover', function(event) {
+  highlightBuilding(event, layers['buildings']);
   });
 
+  layers['buildings'].addListener('mouseout', function(event) {
+    layers['buildings'].revertStyle();
+  });
 
-layers['markers'].addListener('addfeature',function(e){
-  markerCallback(e.feature) ;
-});
+layers['markers'].addListener('addfeature',function(event) {
+   markerCallback(event, layers['markers'], buildings);
+ });
 //layers['labs'].setMap(map);
 
 layers['buildings'].setMap(map);
@@ -91,10 +91,10 @@ layers['markers'].setMap(map);
 layers['path'].setMap(map);
 
 
-layers['buildings'].loadGeoJson('res/json/buildings.geojson', null);/*buildingsCallback(layers['buildings']));*/
+layers['buildings'].loadGeoJson('res/json/buildings.geojson', null, check_cb('buildings'));/*buildingsCallback(layers['buildings']));*/
 layers['path'].loadGeoJson('res/json/path1.geojson', null);
 layers['markers'].loadGeoJson('res/json/labs.geojson', null);
-layers['markers'].loadGeoJson('res/json/offices.geojson', null);/*,markerCallback(layers['offices']));*/
+layers['markers'].loadGeoJson('res/json/offices.geojson', null, check_cb('markers'));/*,markerCallback(layers['offices']));*/
 
 //layers['offices'].setMap(map)
 layers['markers'].setStyle( {
@@ -104,7 +104,6 @@ layers['markers'].setStyle( {
     , scale: 5
     , strokeColor: markers.outlineColor
     , strokeWeight: 1.5
-// fillColor:'#202020'
     , fillOpacity: 1
   }
 });
@@ -117,6 +116,7 @@ layers['buildings'].setStyle( {
 
 layers['path'].setStyle( {
     strokeColor: '#202020'
+
     ,icon: {
         path: google.maps.SymbolPath.CIRCLE
         , scale: 5
@@ -125,23 +125,11 @@ layers['path'].setStyle( {
         , strokeWeight: 0.75
         , fillColor:'#202020'
         , fillOpacity: 1
+}});
 
-    // size: new google.maps.Size(markers.size, markers.size),
-    // origin: new google.maps.Point(0, 0),
-    // anchor: new google.maps.Point(markers.size/2, markers.size/2),
-    // scaledSize: new google.maps.Size(markers.size, markers.size)
-  }
-});
-//
-
-// console.log(map.data);
-// map.data.forEach(function(feature) {
-//     console.log('>> ');
-// });
-console.log("huh");
+console.log("eol");
 
 }
-
 
 
 /////////////////
@@ -149,49 +137,107 @@ console.log("huh");
 /////////////////
 
 
+function defaultView(map){
+  map.setCenter(wpi.latLng);
+  map.setZoom(wpi.def_zoom);
+}
+function check_cb(name){ console.log(name,'done')}
 
-function check_cb(){ console.log('done')}
 
-
-function markerCallback(marker){
-    var c=0;
-    console.log('hit');
-    console.log(marker.getProperty('name') , ', ',marker.getProperty('type'),', ', marker.getId(),': ', marker.getGeometry().getType());
+function markerCallback(event, layer, bmap){
+    marker=event.feature;//console.log('hit');
+    building=marker.getProperty('building');
+    //marker.setMap(null); // hide the marker
+    bmap[building].features.push(marker);
+    //console.log(layer);
+    console.log(marker.getProperty('class'));
+    layer.overrideStyle(marker, {
+      visible: false,
+      clickable: false,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE
+        , scale: 5
+        , strokeColor: markers.outlineColor
+        , strokeWeight: 1.5
+        , fillColor: markers.types[marker.getProperty('class')].color
+        , fillOpacity: 1
+      }}
+    );
+    n=bmap[building].features.length;
+    bmap[building].cluster.setLabel(n.toString());
+    bmap[building].cluster.setShape({icon:{scale:6+2*n}});
+    //google.maps.Marker.setStyle();
     // marker.setStyle({
     //   icon:{
     //     fillColor: markers.lab.color
     //;  }
-
 }
 
+function  buildingCallback(f,bmap, gmap){
+  //f.setProperty("center",getPolygonBounds(f).getCenter());
+  label=f.getProperty('label');
+  bmap[label]={};// Feature related stuff here
+  bmap[label].features=[];// Feature related stuff here
+  bmap[label].center=getPolygonBounds(f).getCenter();
+  bmap[label].cluster=new google.maps.Marker({
+      visible: true
+    , map: gmap
+    , position:  bmap[label].center
+    , label: '0'
+    , icon:
+      {path: google.maps.SymbolPath.CIRCLE
+        , scale: 8
+      , strokeColor: markers.outlineColor
+      , strokeWeight: 1
+      , fillColor: markers.types['simple'].color
+      , fillOpacity: 1
+    }
+  });
+  console.log(f.getProperty('name'));
+}
+
+function clusterMarkers(){}
+
+
+//hover -> break, clickable
+//click -> break, unclickable, lock OR toggle, clickable
+
+function breakCluster(){} //shrink and distribute animation
+
+function gatherCluster(){}
+
+function markerFromEntry(){}
+
+function focusBuilding(event, layer){
+
+    var feature = event.feature;
+    if(feature.getGeometry().getType()=='Polygon'){
+        feature.setProperty('focused', true); //set all others o false
+        map.fitBounds(getPolygonBounds(feature));
+        console.log(feature.getProperty('name'));
+      }
+}
+
+function highlightBuilding(event, layer){
+     if(event.feature.getGeometry().getType()=='Polygon'){
+      layer.revertStyle();
+      layer.overrideStyle(event.feature, {strokeWeight: 4.5, fillColor: '#C04040'});
+      }
+      else{
+      console.log('?');
+      }
+}
+function getPolygonBounds(f){
+    var bounds = new google.maps.LatLngBounds();
+    f.getGeometry().getArray().forEach(function(path){
+      path.getArray().forEach(function(latLng){
+        bounds.extend(latLng);
+      });
+    });
+
+    return bounds;
+}
 function labsCallback(json){
   labs=json;
   console.log(labs);
 }
-
-function  buildingCallback(feature){
-
-  //  map.Data.setMap(map);
-// Feature related stuff here
-    console.log(feature.getProperty('name'));
-  }
-  // buildings=json;
-  // console.log('wth');
-  // console.log(buildings);
-  //
-  // $.each(buildings, function(idx, loc) {
-  // //draw
-  // console.log('drawing buildings');
-  // loc.dwg = new google.maps.Polygon({
-  //         paths: loc.coordinates,
-  //         strokeColor: '#FF0000',
-  //         strokeOpacity: 0.8,
-  //         strokeWeight: 3,
-  //         fillColor: '#FF0000',
-  //         fillOpacity: 0.35
-  //       });
-  // loc.dwg.setMap(map);
-  // // add listener
-  //
-  // // add counter
-  //   loc.count =0;

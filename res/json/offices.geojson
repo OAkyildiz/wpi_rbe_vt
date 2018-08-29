@@ -14,7 +14,8 @@
       "properties": {
         "name": "Jane Li",
         "building": "85p",
-        "type": "office"
+        "class": "office",
+        "label": "jli"
       }
     },
     {
@@ -30,7 +31,7 @@
       "properties": {
         "name": "Carlo Pincerolli",
         "building": "85p",
-        "type": "office"
+        "class": "office"
       }
     },
     {
@@ -46,7 +47,7 @@
       "properties": {
         "name": "Loris Fiscera",
         "building": "85p",
-        "type": "office"
+        "class": "office"
       }
     },
     {
@@ -62,7 +63,7 @@
       "properties": {
         "name": "Jie Fu",
         "building": "85p",
-        "type": "office"
+        "class": "office"
       }
     },
     {
@@ -78,7 +79,7 @@
       "properties": {
         "name": "Jing Xiao",
         "building": "85p",
-        "type": "office"
+        "class": "office"
       }
     },
     {
@@ -94,7 +95,7 @@
       "properties": {
         "name": "Marko Popovic",
         "building": "85p",
-        "type": "office"
+        "class": "office"
       }
     },
     {
@@ -110,7 +111,7 @@
       "properties": {
         "name": "David",
         "building": "85p",
-        "type": "office"
+        "class": "office"
       }
     },
     {
@@ -126,7 +127,7 @@
       "properties": {
         "name": "Hide",
         "building": "85p",
-        "type": "office"
+        "class": "office"
       }
     },
     {
@@ -142,7 +143,7 @@
       "properties": {
         "name": "Point 9",
         "building": "85p",
-        "type": "office"
+        "class": "office"
       }
     },
     {
@@ -158,7 +159,7 @@
       "properties": {
         "name": "William Michalson",
         "building": "85p",
-        "type": "office"
+        "class": "office"
       }
     },
     {
@@ -174,7 +175,7 @@
       "properties": {
         "name": "Nicholas Bertozzi",
         "building": "85p",
-        "type": "office"
+        "class": "office"
       }
     },
     {
@@ -190,7 +191,7 @@
       "properties": {
         "name": "Craig Putnam",
         "building": "85p",
-        "type": "office"
+        "class": "office"
       }
     },
     {
@@ -206,7 +207,7 @@
       "properties": {
         "name": "Kenneth Stafford",
         "building": "higgins",
-        "type": "office"
+        "class": "office"
       }
     },
     {
@@ -222,7 +223,7 @@
       "properties": {
         "name": "Bradley Miller",
         "building": "higgins",
-        "type": "office"
+        "class": "office"
       }
     }
   ]

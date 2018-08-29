@@ -69,7 +69,9 @@
       },
       "properties": {
         "name": "Robot Pits @ Rec Center",
-        "description": "test"
+        "description": "test",
+        "class": "building",
+        "label": "pits"
       }
     },
     {
@@ -107,7 +109,9 @@
         ]
       },
       "properties": {
-        "name": "Harrington Court"
+        "name": "Harrington Court",
+        "class": "building",
+        "label": "harrington"
       }
     },
     {
@@ -145,7 +149,10 @@
         ]
       },
       "properties": {
-        "name": "Foisie Innovation Center"
+        "name": "Foisie Innovation Center",
+        "class": "building",
+        "description": "",
+        "label": "foisie"
       }
     },
     {
@@ -223,7 +230,10 @@
         ]
       },
       "properties": {
-        "name": "Alden Hall"
+        "name": "Alden Hall",
+        "class": "building",
+        "description": "",
+        "label": "alden"
       }
     },
     {
@@ -301,7 +311,10 @@
         ]
       },
       "properties": {
-        "name": "Higgins Labs"
+        "name": "Higgins Labs",
+        "class": "building",
+        "description": "",
+        "label": "higgins"
       }
     },
     {
@@ -359,7 +372,10 @@
         ]
       },
       "properties": {
-        "name": "Washburn Shops"
+        "name": "Washburn Shops",
+        "class": "building",
+        "description": "",
+        "label": "washburn"
       }
     },
     {
@@ -437,7 +453,10 @@
         ]
       },
       "properties": {
-        "name": "Atwater Kent Laboratories"
+        "name": "Atwater Kent Laboratories",
+        "class": "building",
+        "description": "",
+        "label": "ak"
       }
     },
     {
@@ -520,7 +539,10 @@
         ]
       },
       "properties": {
-        "name": "Prescott 85"
+        "name": "Prescott 85",
+        "class": "building",
+        "label": "85p",
+        "description": ""
       }
     }
   ]
