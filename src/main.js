@@ -22,15 +22,32 @@ var markers={
   , types: new Map()
   , outlineColor: '#606060'
 }
-markers.types['simple']= {ico: 'res/ico/circle_ico.png', color: 'red'};
+
+var buildings = new Map();
+var labs;
+var offices;
+var path;
+
+var layers = new Map();
+var temp_ico;
+
 markers.types['lab']= {ico: 'res/ico/tools.svg', color: '#902A20'};
 markers.types['office']= {ico: 'res/ico/desk.png', color: '#32607A'};
 markers.types['project']= {ico:'res/ico/gear.png', color:'#323232'};
+markers.types['cluster']= {ico:'res/ico/gear.svg', color:'#301020'};
 
-
+var cluster_ico={path: markers.types['cluster'].ico
+  , scale: 8
+, strokeColor: markers.outlineColor
+, strokeWeight: 1
+, fillColor: markers.types['cluster'].color
+, fillOpacity: 1
+};
 
 var map;
 var build = true;
+
+
 function initMap(){
   map = new google.maps.Map(document.getElementById('map'), {
     center: wpi.latLng,
@@ -49,13 +66,17 @@ function initMap(){
     styles: wpi_style
   });
 
-var buildings = new Map();
-var labs;
-var offices;
-var path;
 
-var layers = new Map();
 
+markers.types['simple']= {ico: google.maps.SymbolPath.CIRCLE, color: 'red'};
+
+temp_ico = {path: markers.types['simple'].ico
+  , scale: 8
+, strokeColor: markers.outlineColor
+, strokeWeight: 1
+, fillColor: markers.types['simple'].color
+, fillOpacity: 0.65
+}
 map.addListener('click', function(event) { defaultView(map);});
 map.addListener('idle', function(event) {console.log('idle');});
 
@@ -74,7 +95,7 @@ layers['buildings'].addListener('click', function(event) {
   focusBuilding(event, layers['buildings']);
   });
 layers['buildings'].addListener('mouseover', function(event) {
-  highlightBuilding(event, layers['buildings']);
+  mouseOverHandler(event, layers['buildings']);
   });
 
   layers['buildings'].addListener('mouseout', function(event) {
@@ -100,7 +121,7 @@ layers['markers'].loadGeoJson('res/json/offices.geojson', null, check_cb('marker
 layers['markers'].setStyle( {
 
   icon: {
-    path: google.maps.SymbolPath.CIRCLE
+    path: markers.types['simple'].ico
     , scale: 5
     , strokeColor: markers.outlineColor
     , strokeWeight: 1.5
@@ -118,7 +139,7 @@ layers['path'].setStyle( {
     strokeColor: '#202020'
 
     ,icon: {
-        path: google.maps.SymbolPath.CIRCLE
+        path: markers.types['simple'].ico
         , scale: 5
         , strokeColor: '#202020'
         , StrokeColor: markers.outlineColor
@@ -147,6 +168,8 @@ function check_cb(name){ console.log(name,'done')}
 function markerCallback(event, layer, bmap){
     marker=event.feature;//console.log('hit');
     building=marker.getProperty('building');
+    //console.log(building);
+
     //marker.setMap(null); // hide the marker
     bmap[building].features.push(marker);
     //console.log(layer);
@@ -155,7 +178,7 @@ function markerCallback(event, layer, bmap){
       visible: false,
       clickable: false,
       icon: {
-        path: google.maps.SymbolPath.CIRCLE
+        path: markers.types['simple'].ico
         , scale: 5
         , strokeColor: markers.outlineColor
         , strokeWeight: 1.5
@@ -165,7 +188,10 @@ function markerCallback(event, layer, bmap){
     );
     n=bmap[building].features.length;
     bmap[building].cluster.setLabel(n.toString());
-    bmap[building].cluster.setShape({icon:{scale:6+2*n}});
+    temp_ico.scale=8+n/2;
+    bmap[building].cluster.setIcon(temp_ico);
+    //console.log( bmap[building])
+    //layers['buildings'].overrideStyle(bmap[building].cluster,{icon: {path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,  scale:6+2*n}});
     //google.maps.Marker.setStyle();
     // marker.setStyle({
     //   icon:{
@@ -184,18 +210,40 @@ function  buildingCallback(f,bmap, gmap){
     , map: gmap
     , position:  bmap[label].center
     , label: '0'
-    , icon:
-      {path: google.maps.SymbolPath.CIRCLE
-        , scale: 8
-      , strokeColor: markers.outlineColor
-      , strokeWeight: 1
-      , fillColor: markers.types['simple'].color
-      , fillOpacity: 1
-    }
+    , icon: temp_ico // TODO: check for a potential bug where async loading
+                    // changes the scale of temp_ico before it's loaded
   });
   console.log(f.getProperty('name'));
-}
+  //console.log(bmap[label].cluster.getIcon());
+  bmap[label].cluster.addListener('mouseover',function(event) {
+    // markerCallback(event, layers['markers'], buildings);
+    console.log(label);
+   });
 
+  bmap[label].cluster.addListener('click',function(event) {
+     // markerCallback(event, layers['markers'], buildings);
+     //TODO animation here
+      bmap[label].cluster.setVisible(false);
+      console.log(label)
+      for(idx=1; idx<bmap[label].features.length; idx++){
+
+        //console.log(bmap[building].features[idx]);
+        map.data.revertStyle();
+        layers['markers'].overrideStyle(bmap[label].features[idx], {
+          visible: true,
+          clickable: true,
+        });
+
+        //setVisible(true);
+      }
+    });
+  //temp_ico=(bmap[label].cluster.getIcon());
+// var icon = {
+//     url: "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/aa.svg",
+//     anchor: new google.maps.Point(25,50),
+//     scaledSize: new google.maps.Size(50,50)
+// }
+}
 function clusterMarkers(){}
 
 
@@ -217,11 +265,16 @@ function focusBuilding(event, layer){
         console.log(feature.getProperty('name'));
       }
 }
-
-function highlightBuilding(event, layer){
-     if(event.feature.getGeometry().getType()=='Polygon'){
+function mouseOverHandler(event, layer){
+  if(event.feature.getGeometry().getType()=='Polygon'){
+    highlightBuilding(event.feature, layer);}
+  else{
+    console.log(event.feature.getGeometry().getType())}
+}
+function highlightBuilding(feature, layer){
+     if(feature.getGeometry().getType()=='Polygon'){
       layer.revertStyle();
-      layer.overrideStyle(event.feature, {strokeWeight: 4.5, fillColor: '#C04040'});
+      layer.overrideStyle(feature, {strokeWeight: 4.5, fillColor: '#C04040'});
       }
       else{
       console.log('?');
