@@ -225,7 +225,7 @@ function  buildingCallback(f,bmap, gmap){
      //TODO animation here
       bmap[label].cluster.setVisible(false);
       console.log(label)
-      for(idx=1; idx<bmap[label].features.length; idx++){
+      for(idx=0; idx<bmap[label].features.length; idx++){
 
         //console.log(bmap[building].features[idx]);
         map.data.revertStyle();
