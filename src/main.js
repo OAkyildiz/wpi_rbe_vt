@@ -93,6 +93,7 @@ layers['buildings'].addListener('addfeature',function(e){
 
 layers['buildings'].addListener('click', function(event) {
   focusBuilding(event, layers['buildings']);
+  // TODO: resize markers here.
   });
 layers['buildings'].addListener('mouseover', function(event) {
   mouseOverHandler(event, layers['buildings']);
@@ -105,6 +106,11 @@ layers['buildings'].addListener('mouseover', function(event) {
 layers['markers'].addListener('addfeature',function(event) {
    markerCallback(event, layers['markers'], buildings);
  });
+
+ layers['markers'].addListener('click',function(event) {
+    //markerClicked(event, layers['markers'], buildings);
+    on(event.feature.getProperty('name'));
+  });
 //layers['labs'].setMap(map);
 
 layers['buildings'].setMap(map);
@@ -149,7 +155,6 @@ layers['path'].setStyle( {
 }});
 
 console.log("eol");
-
 }
 
 
@@ -161,18 +166,19 @@ console.log("eol");
 function defaultView(map){
   map.setCenter(wpi.latLng);
   map.setZoom(wpi.def_zoom);
+  //buildings.forEach(resetClusters);
+  gatherCluster(buildings['85p']);
 }
-function check_cb(name){ console.log(name,'done')}
 
+function check_cb(name){ console.log(name,'done')}
 
 function markerCallback(event, layer, bmap){
     marker=event.feature;//console.log('hit');
     building=marker.getProperty('building');
-    //console.log(building);
 
     //marker.setMap(null); // hide the marker
     bmap[building].features.push(marker);
-    //console.log(layer);
+    // console.log(  bmap[building]);
     console.log(marker.getProperty('class'));
     layer.overrideStyle(marker, {
       visible: false,
@@ -197,46 +203,23 @@ function markerCallback(event, layer, bmap){
     //   icon:{
     //     fillColor: markers.lab.color
     //;  }
+
+
+
 }
 
 function  buildingCallback(f,bmap, gmap){
   //f.setProperty("center",getPolygonBounds(f).getCenter());
+  console.log(f.getProperty('name'));
   label=f.getProperty('label');
   bmap[label]={};// Feature related stuff here
   bmap[label].features=[];// Feature related stuff here
   bmap[label].center=getPolygonBounds(f).getCenter();
-  bmap[label].cluster=new google.maps.Marker({
-      visible: true
-    , map: gmap
-    , position:  bmap[label].center
-    , label: '0'
-    , icon: temp_ico // TODO: check for a potential bug where async loading
-                    // changes the scale of temp_ico before it's loaded
-  });
-  console.log(f.getProperty('name'));
-  //console.log(bmap[label].cluster.getIcon());
-  bmap[label].cluster.addListener('mouseover',function(event) {
-    // markerCallback(event, layers['markers'], buildings);
-    console.log(label);
-   });
+  bmap[label].cluster=createCluster(label ,bmap ,gmap);
 
-  bmap[label].cluster.addListener('click',function(event) {
-     // markerCallback(event, layers['markers'], buildings);
-     //TODO animation here
-      bmap[label].cluster.setVisible(false);
-      console.log(label)
-      for(idx=0; idx<bmap[label].features.length; idx++){
+  //marker.addListener('click',function() {
 
-        //console.log(bmap[building].features[idx]);
-        map.data.revertStyle();
-        layers['markers'].overrideStyle(bmap[label].features[idx], {
-          visible: true,
-          clickable: true,
-        });
-
-        //setVisible(true);
-      }
-    });
+//  });
   //temp_ico=(bmap[label].cluster.getIcon());
 // var icon = {
 //     url: "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/aa.svg",
@@ -244,15 +227,82 @@ function  buildingCallback(f,bmap, gmap){
 //     scaledSize: new google.maps.Size(50,50)
 // }
 }
-function clusterMarkers(){}
+
+function createCluster(lbl ,bmap ,gmap){
+  marker = new google.maps.Marker({
+      visible: true
+    , map: gmap
+    , position:  bmap[lbl].center
+    , building: lbl //   dirty circle reference
+    , label: '0'
+    , icon: temp_ico // TODO: check for a potential bug where async loading
+                    // changes the scale of temp_ico before it's loaded
+  });
+  console.log(lbl);
+
+  //console.log(bmap[label].cluster.getIcon());
+  marker.addListener('mouseover',function() {
+    // markerCallback(event, layers['markers'], buildings);
+  console.log(lbl);
+   });
+
+  marker.addListener('click',function() {
+     // markerCallback(event, layers['markers'], buildings);
+     //TODO animation here
+    //showInfo(bmap[lbl]);
+
+    breakCluster(bmap[lbl]);
+  //  on();
+    });
+    return marker;
+}
+
+function on(text) {
+    document.getElementById("overlay").style.display = "block";
+    document.getElementById("overlayText").innerHTML=text;
+}
+
+function off() {
+    document.getElementById("overlay").style.display = "none";
+}
+
+
+function resetClusters(value, key, map){
+  console.log(map[key]);
+  console.log(value);
+  gatherCluster(map[key]);
+}
 
 
 //hover -> break, clickable
 //click -> break, unclickable, lock OR toggle, clickable
 
-function breakCluster(){} //shrink and distribute animation
+function breakCluster(building){
+      building.cluster.setVisible(false);
+      console.log(label)
+      for(idx=0; idx<building.features.length; idx++){
 
-function gatherCluster(){}
+        //console.log(bmap[building].features[idx]);
+        map.data.revertStyle();
+        layers['markers'].overrideStyle(building.features[idx], {
+          visible: true,
+          clickable: true,
+        });
+      }} //shrink and distribute animation
+
+function gatherCluster(building){
+  for(idx=0; idx<building.features.length; idx++){
+
+    //console.log(bmap[building].features[idx]);
+    map.data.revertStyle();
+    layers['markers'].overrideStyle(building.features[idx], {
+      visible: false,
+      clickable: false,
+    });
+  }
+  building.cluster.setVisible(true);
+
+}
 
 function markerFromEntry(){}
 

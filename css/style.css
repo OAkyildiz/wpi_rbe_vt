@@ -1,11 +1,55 @@
 /* Always set the map height explicitly to define the size of the div
  * element that contains the map. */
-#map {
-  height: 720px;
-  width: 1080px;
-}
+
 /* Optional: Makes the sample page fill the window. */
 html, body {
   margin: 0;
   padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#overlayText{
+    color: #903030;
+    vertical-align: top;
+    font: 24px 'Arial Narrow', sans-serif; !important; /* I picked this font because it's the closest looking 'web safe' font http://cssfontstack.com/ */
+    text-transform: uppercase;
+}
+
+#text {
+  font: 12px 'Calibri', sans-serif; !important;/* I picked this font because it's the closest looking 'web safe' font http://cssfontstack.com/ */
+  align="left"
+  color: #000000; !important;
+  text-transform: uppercase;
+  letter-spacing: -4px;
+}
+
+#wrapper { position: relative; }
+#overlay {
+    position: relative; /* Sit on top of the page content */
+    display: none; /* Hidden by default */
+
+
+    background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+    z-index: 99; /* Specify a stack order in case you're using a different order for other elements */
+    cursor: pointer; /* Add a pointer on hover */
+
+    text-align: center;
+    /*color: #AA3030; !important;*/
+
+
+}
+#overlay .row {
+  display: flex;
+}
+
+#overlay .column {
+  flex: 50%;
+}
+
+
+#map {
+  height: 720px;
+  width: 1080px;
+  position: absolute;
 }
