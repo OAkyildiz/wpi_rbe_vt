@@ -1,4 +1,5 @@
 var api_key='AIzaSyC5T6PpdEd7hWeEMrJcinjSJnMfzbnFaC8'
+var api_key2='AIzaSyD-MPagQ1OQT4urv8RYak6m_LHugkrBr6Q'
 document.addEventListener('DOMContentLoaded', function () {
   if (document.querySelectorAll('#map').length > 0)
   {
@@ -9,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var js_file = document.createElement('script');
     js_file.type = 'text/javascript';
-    js_file.src = 'https://maps.googleapis.com/maps/api/js?callback=initMap&key='+api_key+'&language=' + lang;
+    js_file.src = 'https://maps.googleapis.com/maps/api/js?callback=initMap&key='+api_key2+'&language=' + lang;
     document.getElementsByTagName('head')[0].appendChild(js_file);
   }
 });
@@ -55,7 +56,8 @@ function initMap(){
     minZoom: 16,
     maxZoom: 19.5,
     zoomControl: true,
-    gestureHandling: 'cooperative',
+    //gestureHandling: 'cooperative',
+    gestureHandling: 'none',
     scrollWheel: true,
     //draggable: false,
     mapTypeControl: false,
@@ -260,6 +262,8 @@ function createCluster(lbl ,bmap ,gmap){
 function on(text) {
     document.getElementById("overlay").style.display = "block";
     document.getElementById("overlayText").innerHTML=text;
+    document.getElementById("myImg").src = "hackanm.gif";
+
 }
 
 function off() {
@@ -279,10 +283,10 @@ function resetClusters(value, key, map){
 
 function breakCluster(building){
       building.cluster.setVisible(false);
-      console.log(label)
+      console.log(building.cluster.building)
       for(idx=0; idx<building.features.length; idx++){
 
-        //console.log(bmap[building].features[idx]);
+      // console.log(building.features[idx].coordinates);
         map.data.revertStyle();
         layers['markers'].overrideStyle(building.features[idx], {
           visible: true,
