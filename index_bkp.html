@@ -10,20 +10,38 @@
   </head>
   <body>
     <h2> WPI RBE Program Map - Test</h2>
+
     <style>
-    #overlay{
-    display: none;
+    #wrapper { position: relative; }
+    #overlay {
+        position: absolute; /* Sit on top of the page content */
+        display: none|flex; /* Hidden by default */
+        background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+        top: 10px;
+        left: 10px;
+        width: 90%;
+        z-index: 99; /* Specify a stack order in case you're using a different order for other elements */
+        cursor: pointer; /* Add a pointer on hover */
+
+        text-align: center;
+        /*color: #AA3030; !important;*/
+
+
+      column-count: 2;
+
     }
-    </style>
+
+    .column {
+      flex: 50%;
+    }
+  </style>
 
     <div id="wrapper">
       <div id="map">
 
-      </div>
-      <div id="overlay" onclick="off()">
-        <div id="header">
-          <h2 id="header_text">Header <h2/>
-        </div>
+      </div id="overlay_container">
+       <div id="overlay" onclick="off()">
+        <div id="header"><h2 >Header</h2></div>
         <div id="infopage">
 
           <div class="content" id="leftbar">
@@ -38,9 +56,11 @@
             </div>
 
           </div>
+
+
+
         </div>
         <footer>Footer</footer>
-        </div>
     </div>
 
     <script src="src/main.js" defer></script>

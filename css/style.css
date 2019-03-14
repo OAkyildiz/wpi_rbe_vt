@@ -2,6 +2,11 @@
  * element that contains the map. */
 
 /* Optional: Makes the sample page fill the window. */
+* - map {
+  box-sizing: border-box;
+  padding: 2px;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -9,26 +14,24 @@ html, body {
   height: 100%;
 }
 
-#overlayText{
-    color: #903030;
-    vertical-align: top;
-    font: 24px 'Arial Narrow', sans-serif; !important; /* I picked this font because it's the closest looking 'web safe' font http://cssfontstack.com/ */
-    text-transform: uppercase;
-}
 
-#text {
-  font: 12px 'Calibri', sans-serif; !important;/* I picked this font because it's the closest looking 'web safe' font http://cssfontstack.com/ */
-  align="left"
-  color: #000000; !important;
-  text-transform: uppercase;
-  letter-spacing: -4px;
+#map {
+  height: 720px;
+  width: 1080px;
+  position: absolute;
 }
+/* Overlay*/
 
-#wrapper { position: relative; }
+#wrapper { position: relative;
+            }
 #overlay {
     position: relative; /* Sit on top of the page content */
-    display: none; /* Hidden by default */
-
+    /* display: none | flex; /* Hidden by default */ */
+    display: none;
+    min-height: 80vh;
+    flex-direction: column;
+    margin: 24px;
+    max-height: 640px;
 
     background-color: rgba(0,0,0,0.5); /* Black background with opacity */
     z-index: 99; /* Specify a stack order in case you're using a different order for other elements */
@@ -36,20 +39,73 @@ html, body {
 
     text-align: center;
     /*color: #AA3030; !important;*/
+}
 
+#header {
+  font-family: monospace;
+  text-align: center;
+  min-height: 30px;
+  height: 12vh;
+
+  background: #AA3030;
+}
+#header_text{
 
 }
-#overlay .row {
+
+#infopage {
   display: flex;
+  flex: 1;
+}
+#infopage > #article {
+  flex: 1;
+  font-size: 13px;
+}
+/* Page text */
+
+
+#text {
+  font: 12px 'Calibri', sans-serif; !important;/* I picked this font because it's the closest looking 'web safe' font http://cssfontstack.com/ */
+  align="left"
+  color: #000000; !important;
+
 }
 
-#overlay .column {
-  flex: 50%;
+#infopage > #leftbar,
+#infopage > aside {
+  flex: 0 1 30vw;
+  background: grey;
+  justify-content: flex-start;
+
+}
+#infopage > #leftbar {
+  order: -1;
+  border-right-style: ridge;
+  border-right-radius: 1px;
+  border-right-color: black;
+
 }
 
+#cover {
+  border-radius: 1px;
+  min-width: 0;
+  margin: 5px;
+}
 
-#map {
-  height: 720px;
-  width: 1080px;
-  position: absolute;
+#cover img {
+  width: 95%;
+  object-fit: contain;
+  display: flex;
+  border-radius: 1px;
+}
+
+/* header, footer { */
+
+
+footer {
+  background: rgba(15,15,15,0.5));
+  height: 15vh;
+}
+footer, #article, aside {
+  padding: 1em;
 }

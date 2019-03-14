@@ -28,6 +28,7 @@ var buildings = new Map();
 var labs;
 var offices;
 var path;
+var overlay_state= false;
 
 var layers = new Map();
 var temp_ico;
@@ -260,14 +261,16 @@ function createCluster(lbl ,bmap ,gmap){
 }
 
 function on(text) {
-    document.getElementById("overlay").style.display = "block";
-    document.getElementById("overlayText").innerHTML=text;
+    document.getElementById("overlay").style.display = "flex";
+    document.getElementById("header_text").innerHTML=text;
     //document.getElementById("myImg").src = "hackanm.gif";
-
+    overlay_state = true;
 }
 
 function off() {
     document.getElementById("overlay").style.display = "none";
+    overlay_state = false;
+
 }
 
 
