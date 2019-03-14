@@ -262,7 +262,7 @@ function createCluster(lbl ,bmap ,gmap){
 function on(text) {
     document.getElementById("overlay").style.display = "block";
     document.getElementById("overlayText").innerHTML=text;
-    document.getElementById("myImg").src = "hackanm.gif";
+    //document.getElementById("myImg").src = "hackanm.gif";
 
 }
 

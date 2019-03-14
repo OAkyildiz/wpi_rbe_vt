@@ -12,20 +12,21 @@
     <h2> WPI RBE Program Map - Test</h2>
 
     <style>
-    #wrapper { position: relative; }
+    #wrapper { position: relative; max-width: 1040px,}
     #overlay {
         position: absolute; /* Sit on top of the page content */
         display: none|flex; /* Hidden by default */
         background-color: rgba(0,0,0,0.5); /* Black background with opacity */
-        top: 10px;
-        left: 10px;
+        top: 20px;
+        left: 20px;
         width: 90%;
         z-index: 99; /* Specify a stack order in case you're using a different order for other elements */
         cursor: pointer; /* Add a pointer on hover */
-
+        max-width: 1040px;
         text-align: center;
         /*color: #AA3030; !important;*/
-
+        border-style: dashed;
+        border-width: 1px;
 
       column-count: 2;
 
@@ -33,6 +34,11 @@
 
     .column {
       flex: 50%;
+      border-style: dotted;
+      border-width: 1px;
+    }
+    #c1{
+      
     }
   </style>
 
@@ -46,14 +52,16 @@
                 <a id="overlayText"> <a/>
               </div>
               <div id="image">
-                <img src="path" alt="title">
-              </div>
-              <div id="body">
-                <a id="text">  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum<a/>
-              </div>
+                <!-- <img src="path" alt="title"> -->
+                <img src="res/img/portrait-placeholder.jpeg" alt="Placeholder">
+
+
           </div>
           <div class="column" id="c2"></div>
-
+        </div>
+        <div id="body">
+          <a id="text">  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum<a/>
+        </div>
         </div>
     </div>
 
