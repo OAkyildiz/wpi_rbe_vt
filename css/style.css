@@ -44,8 +44,8 @@ html, body {
 #header {
   font-family: monospace;
   text-align: center;
-  min-height: 30px;
-  height: 12vh;
+  min-height: 24px;
+  height: 8vh;
 
   background: #AA3030;
 }
@@ -60,6 +60,8 @@ html, body {
 #infopage > #article {
   flex: 1;
   font-size: 13px;
+  overflow-y: scroll;
+
 }
 /* Page text */
 
@@ -67,14 +69,14 @@ html, body {
 #text {
   font: 12px 'Calibri', sans-serif; !important;/* I picked this font because it's the closest looking 'web safe' font http://cssfontstack.com/ */
   align="left"
-  color: #000000; !important;
+  color: #999999; !important;
 
 }
 
 #infopage > #leftbar,
 #infopage > aside {
-  flex: 0 1 30vw;
-  background: grey;
+  flex: 0 1 25vw;
+  background: rgba(40,40,40,0.5);
   justify-content: flex-start;
 
 }
@@ -82,7 +84,8 @@ html, body {
   order: -1;
   border-right-style: ridge;
   border-right-radius: 1px;
-  border-right-color: black;
+  border-right-color: rgba(40,40,40,0.5);
+  /* overflow-y: scroll; */
 
 }
 
@@ -93,17 +96,18 @@ html, body {
 }
 
 #cover img {
-  width: 95%;
+  width: 90%;
   object-fit: contain;
   display: flex;
   border-radius: 1px;
+  margin-left: 10px;
 }
 
 /* header, footer { */
 
 
 footer {
-  background: rgba(15,15,15,0.5));
+  background: rgba(40,40,40,0.5));
   height: 15vh;
 }
 footer, #article, aside {
