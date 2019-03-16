@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
+//var md = require('markdown-it')()
+var md=window.markdownit().use(window.markdownitInclude, "info");
+
 var wpi = {latLng: {lat:42.2751, lng:-71.8053}, def_zoom:16.5};
 var wpi_style = [{"featureType":"all","elementType":"labels.text.fill","stylers":[{"saturation":36},{"color":"#000000"},{"lightness":40}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"visibility":"on"},{"color":"#000000"},{"lightness":16}]},{"featureType":"all","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":17},{"weight":1.2}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"landscape.man_made","elementType":"geometry.fill","stylers":[{"color":"#785b5b"},{"visibility":"simplified"}]},{"featureType":"landscape.man_made","elementType":"labels.text.fill","stylers":[{"visibility":"simplified"},{"color":"#400707"}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":21}]},{"featureType":"poi.school","elementType":"geometry.fill","stylers":[{"color":"#4a1616"}]},{"featureType":"poi.sports_complex","elementType":"labels.text.fill","stylers":[{"color":"#350e0e"}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":17}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":29},{"weight":0.2}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":18}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":16}]},{"featureType":"road.local","elementType":"labels.text","stylers":[{"visibility":"off"}]},{"featureType":"road.local","elementType":"labels.text.fill","stylers":[{"hue":"#ff0000"}]},{"featureType":"transit","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":19}]},{"featureType":"water","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":17}]}];
 //TODO: Make symbosl for markers
@@ -29,6 +32,7 @@ var labs;
 var offices;
 var path;
 var overlay_state= false;
+var hovered_feature;//
 
 var layers = new Map();
 var temp_ico;
@@ -48,7 +52,6 @@ var cluster_ico={path: markers.types['cluster'].ico
 
 var map;
 var build = true;
-
 
 function initMap(){
   map = new google.maps.Map(document.getElementById('map'), {
@@ -95,7 +98,7 @@ layers['buildings'].addListener('addfeature',function(e){
 
 
 layers['buildings'].addListener('click', function(event) {
-  focusBuilding(event, layers['buildings']);
+  focusBuilding(event.feature, layers['buildings']);
   // TODO: resize markers here.
   });
 layers['buildings'].addListener('mouseover', function(event) {
@@ -112,7 +115,7 @@ layers['markers'].addListener('addfeature',function(event) {
 
  layers['markers'].addListener('click',function(event) {
     //markerClicked(event, layers['markers'], buildings);
-    on(event.feature.getProperty('name'));
+    show_overlay(event.feature.getProperty('name'),event.feature.getProperty('label'));
   });
 //layers['labs'].setMap(map);
 
@@ -145,7 +148,7 @@ layers['buildings'].setStyle( {
 });
 
 layers['path'].setStyle( {
-    strokeColor: '#202020'
+    strokeColor: '#504040'
 
     ,icon: {
         path: markers.types['simple'].ico
@@ -219,6 +222,7 @@ function  buildingCallback(f,bmap, gmap){
   bmap[label].features=[];// Feature related stuff here
   bmap[label].center=getPolygonBounds(f).getCenter();
   bmap[label].cluster=createCluster(label ,bmap ,gmap);
+  bmap[label].actual=f;
 
   //marker.addListener('click',function() {
 
@@ -255,21 +259,65 @@ function createCluster(lbl ,bmap ,gmap){
     //showInfo(bmap[lbl]);
 
     breakCluster(bmap[lbl]);
+    focusBuilding(bmap[lbl].actual); // workaround for now
+//layers['buildings'] //need to get the building polygon
   //  on();
     });
     return marker;
 }
+//  name is provided for now to replace missing label
+// TODO: get rid of name
+function show_overlay(name,requested) {
+  console.log("show " +name);
 
-function on(text) {
+    if (overlay_state!=requested){
+       update_overlay(name, requested);
+     }
     document.getElementById("overlay").style.display = "flex";
-    document.getElementById("header_text").innerHTML=text;
-    //document.getElementById("myImg").src = "hackanm.gif";
-    overlay_state = true;
 }
 
-function off() {
+function update_overlay(name,requested){
+      var dict;
+      var path;
+      document.getElementById("header_text").innerHTML=name;
+      console.log("loading " + requested );
+      $.getJSON("info/json/" + requested + ".json",function (data){
+        dict=data;
+        path="info/pages/" + requested +"/";
+        document.getElementById("cover_img").src =path+dict.cover;
+      })  .done(function() {
+    console.log( "setting contents" );
+    set_contents(path, dict)
+  })
+  .fail(function() {
+    console.log( "no content here yet" );
+    set_placeholder();
+  })
+  .always(function() {
+    console.log( "complete" );
+  });
+      overlay_state = requested;
+
+}
+function set_contents(path, dict){
+  //document.getElementById("header_text").innerHTML=name;
+  document.getElementById("cover_img").src =path+"img/"+dict.cover;
+  document.getElementById("article").innerHTML= md.render('!!!include('+path+"md/"+dict.main+')!!!');
+
+}
+
+function set_placeholder(){
+
+ //TODO: getJSON only when the JSON is not saved
+ // setContents after that
+ // clean memory when not focused
+ // make the contents[label] = {} a timed queue?
+}
+
+function hide_overlay() {
     document.getElementById("overlay").style.display = "none";
-    overlay_state = false;
+    // overlay_state = false;
+          //not needed for now? maybe seperate falgs
 
 }
 
@@ -288,7 +336,7 @@ function breakCluster(building){
       building.cluster.setVisible(false);
       console.log(building.cluster.building)
       for(idx=0; idx<building.features.length; idx++){
-
+        //vectorize (map)
       // console.log(building.features[idx].coordinates);
         map.data.revertStyle();
         layers['markers'].overrideStyle(building.features[idx], {
@@ -313,15 +361,15 @@ function gatherCluster(building){
 
 function markerFromEntry(){}
 
-function focusBuilding(event, layer){
+function focusBuilding(feature){
 
-    var feature = event.feature;
     if(feature.getGeometry().getType()=='Polygon'){
         feature.setProperty('focused', true); //set all others o false
         map.fitBounds(getPolygonBounds(feature));
         console.log(feature.getProperty('name'));
       }
 }
+
 function mouseOverHandler(event, layer){
   if(event.feature.getGeometry().getType()=='Polygon'){
     highlightBuilding(event.feature, layer);}
@@ -332,9 +380,11 @@ function highlightBuilding(feature, layer){
      if(feature.getGeometry().getType()=='Polygon'){
       layer.revertStyle();
       layer.overrideStyle(feature, {strokeWeight: 4.5, fillColor: '#C04040'});
+      hovered_feature=feature;
       }
       else{
       console.log('?');
+      hovered_feature=null;
       }
 }
 function getPolygonBounds(f){

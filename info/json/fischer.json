@@ -1,0 +1,14 @@
+{
+  "name": "Gregory S. Fischer",
+  "main": "fisher.md",
+  "cover":"fischer.jpg",
+  "building": "Atwater Kent",
+  "links": {"AIMLab": "http://aimlab.wpi.edu/",
+            "Publications": "publications.md"
+          },
+
+  "photos": {"AIM_Fischer_Su_Neurosurgery_Robot.jpg":"",
+              "AIM_MRI_Neurosurgery_Robot.jpg":"http://aimlab.wpi.edu/research/projects/MRI_Robot_for_Prostate_Surgery",
+              "AIM_MRI_Prostate_Robot.jpg": ""
+            }
+}

@@ -24,6 +24,9 @@
   },
   "homepage": "https://github.com/OAkyildiz/rbe_map#readme",
   "dependencies": {
+    "markdown-it": "^8.4.2",
+    "markdown-it-include": "^1.1.0",
+    "npm": "^6.9.0",
     "ol": "^5.1.3"
   }
 }

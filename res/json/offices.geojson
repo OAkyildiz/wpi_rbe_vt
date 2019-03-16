@@ -225,6 +225,23 @@
         "building": "higgins",
         "class": "office"
       }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.800037,
+           42.276019,
+           0
+        ]
+      },
+      "properties": {
+        "name": "Gregory S. Fischer",
+        "building": "85p",
+        "class": "office",
+        "label": "fischer"
+      }
     }
   ]
 }
