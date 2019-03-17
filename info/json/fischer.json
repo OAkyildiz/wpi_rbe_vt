@@ -2,7 +2,10 @@
   "name": "Gregory S. Fischer",
   "main": "fisher.md",
   "cover":"fischer.jpg",
-  "building": "Atwater Kent",
+  "building": "85 Prescott",
+  "room": "234, AIM Lab",
+  "email": "gsfischer@wpi.edu",
+  "phone": "5080000000",
   "links": {"AIMLab": "http://aimlab.wpi.edu/",
             "Publications": "publications.md"
           },

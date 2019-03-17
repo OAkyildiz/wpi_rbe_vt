@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 //var md = require('markdown-it')()
-var md=window.markdownit().use(window.markdownitInclude, "info");
 
 var wpi = {latLng: {lat:42.2751, lng:-71.8053}, def_zoom:16.5};
 var wpi_style = [{"featureType":"all","elementType":"labels.text.fill","stylers":[{"saturation":36},{"color":"#000000"},{"lightness":40}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"visibility":"on"},{"color":"#000000"},{"lightness":16}]},{"featureType":"all","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":17},{"weight":1.2}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"landscape.man_made","elementType":"geometry.fill","stylers":[{"color":"#785b5b"},{"visibility":"simplified"}]},{"featureType":"landscape.man_made","elementType":"labels.text.fill","stylers":[{"visibility":"simplified"},{"color":"#400707"}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":21}]},{"featureType":"poi.school","elementType":"geometry.fill","stylers":[{"color":"#4a1616"}]},{"featureType":"poi.sports_complex","elementType":"labels.text.fill","stylers":[{"color":"#350e0e"}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":17}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":29},{"weight":0.2}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":18}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":16}]},{"featureType":"road.local","elementType":"labels.text","stylers":[{"visibility":"off"}]},{"featureType":"road.local","elementType":"labels.text.fill","stylers":[{"hue":"#ff0000"}]},{"featureType":"transit","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":19}]},{"featureType":"water","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":17}]}];
@@ -38,7 +37,7 @@ var layers = new Map();
 var temp_ico;
 
 markers.types['lab']= {ico: 'res/ico/tools.svg', color: '#902A20'};
-markers.types['office']= {ico: 'res/ico/desk.png', color: '#32607A'};
+markers.types['office']= {ico: 'res/ico/desk.png', color: '#808080'};
 markers.types['project']= {ico:'res/ico/gear.png', color:'#323232'};
 markers.types['cluster']= {ico:'res/ico/gear.svg', color:'#301020'};
 
@@ -112,6 +111,14 @@ layers['buildings'].addListener('mouseover', function(event) {
 layers['markers'].addListener('addfeature',function(event) {
    markerCallback(event, layers['markers'], buildings);
  });
+
+ layers['markers'].addListener('mouseover', function(event) {
+   mouseOverHandler(event, layers['buildings']);
+   });
+
+   layers['markers'].addListener('mouseout', function(event) {
+     layers['markers'].revertStyle();
+   });
 
  layers['markers'].addListener('click',function(event) {
     //markerClicked(event, layers['markers'], buildings);
@@ -265,61 +272,7 @@ function createCluster(lbl ,bmap ,gmap){
     });
     return marker;
 }
-//  name is provided for now to replace missing label
-// TODO: get rid of name
-function show_overlay(name,requested) {
-  console.log("show " +name);
 
-    if (overlay_state!=requested){
-       update_overlay(name, requested);
-     }
-    document.getElementById("overlay").style.display = "flex";
-}
-
-function update_overlay(name,requested){
-      var dict;
-      var path;
-      document.getElementById("header_text").innerHTML=name;
-      console.log("loading " + requested );
-      $.getJSON("info/json/" + requested + ".json",function (data){
-        dict=data;
-        path="info/pages/" + requested +"/";
-        document.getElementById("cover_img").src =path+dict.cover;
-      })  .done(function() {
-    console.log( "setting contents" );
-    set_contents(path, dict)
-  })
-  .fail(function() {
-    console.log( "no content here yet" );
-    set_placeholder();
-  })
-  .always(function() {
-    console.log( "complete" );
-  });
-      overlay_state = requested;
-
-}
-function set_contents(path, dict){
-  //document.getElementById("header_text").innerHTML=name;
-  document.getElementById("cover_img").src =path+"img/"+dict.cover;
-  document.getElementById("article").innerHTML= md.render('!!!include('+path+"md/"+dict.main+')!!!');
-
-}
-
-function set_placeholder(){
-
- //TODO: getJSON only when the JSON is not saved
- // setContents after that
- // clean memory when not focused
- // make the contents[label] = {} a timed queue?
-}
-
-function hide_overlay() {
-    document.getElementById("overlay").style.display = "none";
-    // overlay_state = false;
-          //not needed for now? maybe seperate falgs
-
-}
 
 
 function resetClusters(value, key, map){
@@ -376,6 +329,11 @@ function mouseOverHandler(event, layer){
   else{
     console.log(event.feature.getGeometry().getType())}
 }
+
+function highlightMarker(){
+
+}
+
 function highlightBuilding(feature, layer){
      if(feature.getGeometry().getType()=='Polygon'){
       layer.revertStyle();
@@ -400,4 +358,95 @@ function getPolygonBounds(f){
 function labsCallback(json){
   labs=json;
   console.log(labs);
+}
+
+/* overlay stuff*/
+
+//  name is provided for now to replace missing label
+// TODO: get rid of name
+function show_overlay(name,requested) {
+  console.log("show " +name);
+
+    if (overlay_state!=requested){
+       update_overlay(name, requested);
+     }
+    document.getElementById("overlay").style.display = "flex";
+}
+
+function update_overlay(name,requested){
+      var dict;
+      var path;
+      document.getElementById("header_text").innerHTML=name;
+      console.log("loading " + requested );
+      $.getJSON("info/json/" + requested + ".json",function (data){
+        dict=data;
+        path="info/pages/" + requested +"/";
+        document.getElementById("cover_img").src =path+dict.cover;
+      })  .done(function() {
+    console.log( "setting contents" );
+    set_contents(path, dict)
+  })
+  .fail(function() {
+    console.log( "no content here yet" );
+    set_placeholder();
+  })
+  .always(function() {
+    console.log( "complete" );
+  });
+      overlay_state = requested;
+
+}
+function set_contents(path, dict){
+  //document.getElementById("header_text").innerHTML=name;
+  document.getElementById("cover_img").src =path+"img/"+dict.cover;
+  document.getElementById("article").innerHTML;
+  populate_links(path, dict.links);
+  //md.render('!!!include('+path+"md/"+dict.main+')!!!');
+
+}
+
+function set_placeholder(){
+  document.getElementById("cover_img").src
+                    = "res/img/portrait-placeholder.jpeg";
+
+  document.getElementById("article").innerHTML = "Article";
+ //TODO: getJSON only when the JSON is not saved
+ // setContents after that
+ // clean memory when not focused
+ // make the contents[label] = {} a timed queue?
+}
+
+function hide_overlay() {
+    document.getElementById("overlay").style.display = "none";
+    // overlay_state = false;
+          //not needed for now? maybe seperate falgs
+
+}
+functionjPopulate_links(path, linkmap){
+
+$('#links').append("<a class=\"sidelink\" >hey!</a>");
+
+}
+
+function populate_links(path, linkmap){
+    div_links=document.getElementById("links")
+    console.log(div_links.className)
+    c=0;
+    $('.sidelink').remove();
+
+    for (var key in linkmap) {
+      if (linkmap.hasOwnProperty(key)) {
+        console.log(key + " -> " + linkmap[key]);
+        var a = document.createElement('a');
+        var txt = document.createTextNode(key);
+        a.setAttribute("id", "link"+c);
+        a.className="sidelink";
+        a.appendChild(txt);
+        a.title = key;
+        //md check here;
+        a.href = linkmap[key];
+        div_links.appendChild(a);
+        c+=1;
+      }
+    }
 }

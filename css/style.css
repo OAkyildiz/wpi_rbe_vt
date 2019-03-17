@@ -27,7 +27,7 @@ html, body {
   width: 1084px;}
 #overlay {
     position: relative; /* Sit on top of the page content */
-    /* display: none | flex; /* Hidden by default */ */
+    /* display: none | flex; /* Hidden by default */
     display: none;
     min-height: 70vh;
     flex-direction: column;
@@ -107,7 +107,40 @@ html, body {
   margin-left: 10px;
 }
 
+#links {
+  width: fill
+}
 /* header, footer { */
+/* The sidebar menu */
+#links {
+  height: auto; /* Full-height: remove this if you want "auto" height */
+  width: ; /* Set the width of the sidebar */
+  /*position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  /*z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  left: 0;
+  /*background-color: #111; /* Black */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 20px;
+}
+
+/* The navigation menu links */
+#links a {
+  padding: 6px 6px 6px 8px;
+  text-decoration: none;
+  font: 16px 'Calibri', sans-serif; !important;/* I picked this font because it's the closest looking 'web safe' font http://cssfontstack.com/ */
+  color: #964040;
+  display: block;
+  text-align: right;
+}
+
+/* When you mouse over the navigation links, change their color */
+#links a:hover {
+  color: #f18080;
+}
+
+
+/* Style page content */
 
 
 footer {
