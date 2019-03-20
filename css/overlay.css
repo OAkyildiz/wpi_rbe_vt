@@ -65,8 +65,12 @@
   display: flex;
   flex: 1;
 }
-#infopage > #article {
+/* #infopage > #article { */
+#article {
+
   flex: 1;
+  max-height: 60vh;
+  display: block;
 }
 /* Page text */
 

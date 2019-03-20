@@ -540,7 +540,10 @@ function populate_links(path, linkmap){
     div_links=document.getElementById("links")
     //console.log(div_links.className)
     c=0;
-    $('#sidelink').remove();
+    $('#links').empty();
+    //div_links.removeChildren();
+      //console.log(key + " -> " + linkmap[key]);
+
 
     for (var key in linkmap) {
       if (linkmap.hasOwnProperty(key)) {

@@ -6,7 +6,8 @@
   "room": "Room 234, AIM Lab",
   "email": "gfischer@wpi.edu",
   "phone": "508-831-5261",
-  "links": {"AIMLab": "http://aimlab.wpi.edu/",
+  "links": {"Home": "fischer.html",
+            "AIMLab": "http://aimlab.wpi.edu/",
             "Publications": "publications.html"
           },
 
