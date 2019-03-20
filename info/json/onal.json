@@ -1,0 +1,14 @@
+{
+  "name": "Cagdas Denizel Onal",
+  "main": "onal.html",
+  "cover":"onal.jpg",
+  "building": "Higgins Labs",
+  "room": "Room 105",
+  "email": "cdonal@wpi.edu",
+  "phone": "+1-508-831-4857",
+  "links": {"Soft Robotics Lab": "http://softrobotics.wpi.edu/index.php",
+            "Publications": "publications.html"
+          },
+
+  "photos": {}
+}

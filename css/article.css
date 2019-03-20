@@ -1,0 +1,65 @@
+#article {
+text-align: left;
+vertical-align: top;
+font: 11px 'Calibri', sans-serif; !important;/* I picked this font because it's the closest looking 'web safe' font http://cssfontstack.com/ */
+overflow-y: auto;
+}
+
+#article h3 {
+ font: 14px 'Calibri', sans-serif; !important;
+ font-weight: bolder;
+ color: #AA6666;
+ margin-bottom: 0px;
+}
+#article h4 {
+ font: 12px 'Calibri', sans-serif; !important;
+ font-weight: bold;
+ color: #AA6666;
+}
+
+#article p {
+  font: 11px 'Calibri', sans-serif; !important;/* I picked this font because it's the closest looking 'web safe' font http://cssfontstack.com/ */
+  color: #A5A0A0;
+  vertical-align: middle;
+}
+
+#article a {
+  font: 12px 'Calibri', sans-serif; !important;/* I picked this font because it's the closest looking 'web safe' font http://cssfontstack.com/ */
+  text-decoration: none;
+}
+
+#article a:link {
+  color: #B03030;
+}
+/* visited link */
+#article a:visited {
+  color: #701008;
+}
+
+/* mouse over link */
+#article a:hover {
+  color: #D23535;
+}
+
+/* selected link */
+#article a:active {
+  color: #E53030;
+  /* font-weight: bold; */
+}
+
+#article li {
+  font: 10px 'Calibri', sans-serif; !important;/* I picked this font because it's the closest looking 'web safe' font http://cssfontstack.com/ */
+  color: #A5A0A0;
+}
+#article .key {
+  font-weight: bold;
+  padding-right: 0.5em;
+}
+
+#article ul {
+  font: 10px 'Calibri', sans-serif; !important;/* I picked this font because it's the closest looking 'web safe' font http://cssfontstack.com/ */
+  color: #A5A0A0;
+  list-style-type: none;
+  text-align: left;
+  padding-left: 0.5em;
+}

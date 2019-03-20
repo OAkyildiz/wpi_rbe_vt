@@ -5,6 +5,9 @@
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
     <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/overlay.css" />
+    <link rel="stylesheet" href="css/article.css" />
+    <link rel="stylesheet" href="node_modules/@glidejs/glide/dist/css/glide.core.min.css">
 
 
   </head>
@@ -17,48 +20,72 @@
     </style>
 
     <div id="wrapper">
-      <div id="map">
-
-      </div>
-      <div id="overlay" onclick="hide_overlay()">
+      <div id="map" >  </div>
+      <!-- TODO: add onclick="hide_overlay()" fp to hide blade -->
+      <div id="marker-tooltip"></div>
+      <div id="overlay" >
         <div id="header">
           <h2 id="header_text">Header <h2/>
+          <div id="ctrl" onclick="hide_overlay()"> <img src="res/ico/thin-x.svg" alt="X"/> </div>
         </div>
         <div id="infopage">
 
           <div class="content" id="leftbar">
-            <div  class="deets" id="cover">
-              <!-- <img src="path" alt="title"> -->
-              <img id="cover_img" src="res/img/portrait-placeholder.jpeg" alt="Placeholder">
-            </div>
+              <div  class="deets" id="cover">
+                <!-- <img src="path" alt="title"> -->
+                <img id="cover_img" src="res/img/portrait-placeholder.jpeg" alt="Placeholder"/>
+              </div>
 
-            <div  class="deets" id="personal">
+              <div  class="deets" id="personal">
+                <div class="contact" id="building"> <img src="res/ico/loc.svg" alt="Location:"/><span id="building"> </span></div>
+                <!-- <div class="contact" id="room"> <img src="res/ico/loc.svg" alt="Room:"/><span id="room"> </span></div> -->
+                <div class="contact" id="room"> <span id="room"> </span></div>
+                <div class="contact" id="phone"> <img src="res/ico/phone.svg" alt="#:"/><span id="phone"> </span></div>
+                <div class="contact" id="email"> <img src="res/ico/at.svg" alt="email"/><span id="email"> </span></div>
+              </div>
 
-            </div>
-
-            <div  class="deets" id="links">
-              
-            </div>
-
+              <div  class="deets" id="links">
+              </div>
           </div>
+
           <div class="content" id="article">Article
             <div id="body">
-              <a id="article_text">  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum<a/>
+              <a id="text">  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum<a/>
             </div>
 
           </div>
         </div>
-        <footer>Footer</footer>
+        <!-- <footer>
+          <div class="slide_widget">
+            <div class="slider" data-glide-el="track">
+              <ul class="slides">
+              </ul>
+            </div>
+          </div>
+        </footer> -->
+
         </div>
     </div>
-
+  <div class="creds" id="ico">Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" 		    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 		    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
     <script src="src/main.js" defer></script>
   </script>
   <!-- <script src="res/json/labs.js"></script> -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/8.4.2/markdown-it.min.js"></script>
-<script src="node_modules/markdown-it-include/dist/markdown-it-include.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.0/showdown.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+  <script src="node_modules/@glidejs/glide/dist/glide.min.js"></script>
+  <!-- <script type="text/javascript">
+  $(function(){
+    // var glide = new Glide('.slide_widget');
+    // glide.mount();
+    var glide = new Glide('.slide_widget');
+    glide.mount();
+      autoplay: 8000,
+      hoverpause: true, // set to false for nonstop rotate
+      arrowRightText: '&rarr;',
+      arrowLeftText: '&larr;'
+    });
+  });
+  </script> -->
+
   </body>
 </html>

@@ -14,7 +14,9 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementsByTagName('head')[0].appendChild(js_file);
   }
 });
-
+//used for
+var ne = 0;
+var sw = 0;
 //var md = require('markdown-it')()
 
 var wpi = {latLng: {lat:42.2751, lng:-71.8053}, def_zoom:16.5};
@@ -24,6 +26,7 @@ var markers={
   size: 10
   , types: new Map()
   , outlineColor: '#606060'
+  , boldOutlineColor: '#404040'
 }
 
 var buildings = new Map();
@@ -31,15 +34,18 @@ var labs;
 var offices;
 var path;
 var overlay_state= false;
+var overlay_content = null;
+
 var hovered_feature;//
+
 
 var layers = new Map();
 var temp_ico;
 
-markers.types['lab']= {ico: 'res/ico/tools.svg', color: '#902A20'};
-markers.types['office']= {ico: 'res/ico/desk.png', color: '#808080'};
-markers.types['project']= {ico:'res/ico/gear.png', color:'#323232'};
-markers.types['cluster']= {ico:'res/ico/gear.svg', color:'#301020'};
+markers.types['lab']= {ico: 'res/ico/tools.svg', color: '#902A20', hColor: '#B03B30'};
+markers.types['office']= {ico: 'res/ico/desk.png', color: '#808080', hColor: '#959595'};
+markers.types['project']= {ico:'res/ico/gear.png', color:'#323232', hColor: '#454545'};
+markers.types['cluster']= {ico:'res/ico/gear.svg', color:'#301020', hColor: '#351525'};
 
 var cluster_ico={path: markers.types['cluster'].ico
   , scale: 8
@@ -51,6 +57,7 @@ var cluster_ico={path: markers.types['cluster'].ico
 
 var map;
 var build = true;
+
 
 function initMap(){
   map = new google.maps.Map(document.getElementById('map'), {
@@ -71,7 +78,10 @@ function initMap(){
     styles: wpi_style
   });
 
-
+//////// I.E. USE THIS TO IDSABLE WHEN OVERLAY IS ON
+/////////////////////////
+//addDomListener(instance:Object, eventName:string, handler:Function)
+///////////////////////
 
 markers.types['simple']= {ico: google.maps.SymbolPath.CIRCLE, color: 'red'};
 
@@ -83,7 +93,12 @@ temp_ico = {path: markers.types['simple'].ico
 , fillOpacity: 0.65
 }
 map.addListener('click', function(event) { defaultView(map);});
-map.addListener('idle', function(event) {console.log('idle');});
+map.addListener(map, 'idle', function() {
+                  var bounds =  map.getBounds();
+                  ne = bounds.getNorthEast();
+                  sw = bounds.getSouthWest();
+                  //do whatever you want with those bounds
+         });
 
 
 layers['buildings'] = new google.maps.Data();
@@ -94,7 +109,7 @@ layers['buildings'].addListener('addfeature',function(e){
   buildingCallback(e.feature, buildings, map) ;
 });
 
-
+/* buildings */
 
 layers['buildings'].addListener('click', function(event) {
   focusBuilding(event.feature, layers['buildings']);
@@ -108,31 +123,72 @@ layers['buildings'].addListener('mouseover', function(event) {
     layers['buildings'].revertStyle();
   });
 
+
+  /* Markers */
 layers['markers'].addListener('addfeature',function(event) {
    markerCallback(event, layers['markers'], buildings);
  });
 
- layers['markers'].addListener('mouseover', function(event) {
-   mouseOverHandler(event, layers['buildings']);
-   });
-
-   layers['markers'].addListener('mouseout', function(event) {
-     layers['markers'].revertStyle();
-   });
+ // layers['markers'].addListener('mouseover', function(event) {
+ //   mouseOverHandler(event, layers['buildings']);
+ //   });
+ //
+ //   layers['markers'].addListener('mouseout', function(event) {
+ //     layers['markers'].revertStyle();
+ //   });
 
  layers['markers'].addListener('click',function(event) {
     //markerClicked(event, layers['markers'], buildings);
     show_overlay(event.feature.getProperty('name'),event.feature.getProperty('label'));
   });
+
+  layers['markers'].addListener('mouseover',function(event) {
+     marker=event.feature;
+    // markerCallback(event, layers['markers'], buildings);
+    layers["markers"].overrideStyle(marker, {
+      icon: {
+        scale: 9,
+        path: markers.types['simple'].ico,
+        strokeColor: markers.boldOutlineColor,
+        strokeWeight: 2.5,
+        fillColor: markers.types[marker.getProperty('class')].hColor,
+        fillOpacity: 1
+      }}
+    );
+
+    //currently not priority. show label
+    if (false){
+      var point = map.getProjection().fromLatLngToPoint(event.latLng);
+      console.log(marker.getProperty(point));
+
+      show_tooltip(marker.getProperty('name'), point);
+     }
+   });
+
+   layers['markers'].addListener('mouseout',function(event) {
+     marker=event.feature;
+     hide_tooltip();
+
+     layers["markers"].overrideStyle(marker, {
+       icon: {
+         path: markers.types['simple'].ico,
+         scale: 5,
+         strokeColor: markers.outlineColor,
+         strokeWeight: 1.5,
+         fillColor: markers.types[marker.getProperty('class')].color,
+         fillOpacity: 1
+       }});
+    });
+
 //layers['labs'].setMap(map);
 
+layers['path'].setMap(map);
 layers['buildings'].setMap(map);
 layers['markers'].setMap(map);
-layers['path'].setMap(map);
 
 
-layers['buildings'].loadGeoJson('res/json/buildings.geojson', null, check_cb('buildings'));/*buildingsCallback(layers['buildings']));*/
 layers['path'].loadGeoJson('res/json/path1.geojson', null);
+layers['buildings'].loadGeoJson('res/json/buildings.geojson', null, check_cb('buildings'));/*buildingsCallback(layers['buildings']));*/
 layers['markers'].loadGeoJson('res/json/labs.geojson', null);
 layers['markers'].loadGeoJson('res/json/offices.geojson', null, check_cb('markers'));/*,markerCallback(layers['offices']));*/
 
@@ -150,27 +206,42 @@ layers['markers'].setStyle( {
 
 layers['buildings'].setStyle( {
   fillColor: '#903737',
-  strokeColor: '#503030',
+  strokeColor: '#502020',
   strokeWeight: 2,
 });
 
 layers['path'].setStyle( {
-    strokeColor: '#504040'
+    strokeColor: '#906060'
 
     ,icon: {
         path: markers.types['simple'].ico
         , scale: 5
-        , strokeColor: '#202020'
+        , strokeColor: '#906060'
         , StrokeColor: markers.outlineColor
         , strokeWeight: 0.75
-        , fillColor:'#202020'
+        , fillColor:'#453535'
         , fillOpacity: 1
 }});
 
 console.log("eol");
 }
 
+///**Tooltip**////
+function show_tooltip(name, point){
+  $('#marker-tooltip').html(name).css({
+       'left': point.x,
+       'top': point.y,
+       'display': 'block'
+     });
+}
 
+function hide_tooltip(){
+  $('#marker-tooltip').html(name).css({
+       'display': 'none'
+     });
+}
+
+///////
 /////////////////
   /* Helpers */
 /////////////////
@@ -180,7 +251,8 @@ function defaultView(map){
   map.setCenter(wpi.latLng);
   map.setZoom(wpi.def_zoom);
   //buildings.forEach(resetClusters);
-  gatherCluster(buildings['85p']);
+  //gatherCluster(buildings['85p']);
+  resetClusters();
 }
 
 function check_cb(name){ console.log(name,'done')}
@@ -255,10 +327,6 @@ function createCluster(lbl ,bmap ,gmap){
   console.log(lbl);
 
   //console.log(bmap[label].cluster.getIcon());
-  marker.addListener('mouseover',function() {
-    // markerCallback(event, layers['markers'], buildings);
-  console.log(lbl);
-   });
 
   marker.addListener('click',function() {
      // markerCallback(event, layers['markers'], buildings);
@@ -273,19 +341,20 @@ function createCluster(lbl ,bmap ,gmap){
     return marker;
 }
 
-
-
-function resetClusters(value, key, map){
-  console.log(map[key]);
-  console.log(value);
-  gatherCluster(map[key]);
-}
+function resetClusters(){
+  for (var key in buildings) {
+    if (buildings.hasOwnProperty(key)) {
+        gatherCluster(buildings[key]);
+      }
+    }
+  }
 
 
 //hover -> break, clickable
 //click -> break, unclickable, lock OR toggle, clickable
 
 function breakCluster(building){
+  //TODO: animation here
       building.cluster.setVisible(false);
       console.log(building.cluster.building)
       for(idx=0; idx<building.features.length; idx++){
@@ -299,6 +368,7 @@ function breakCluster(building){
       }} //shrink and distribute animation
 
 function gatherCluster(building){
+  //TODO: animation here
   for(idx=0; idx<building.features.length; idx++){
 
     //console.log(bmap[building].features[idx]);
@@ -328,10 +398,6 @@ function mouseOverHandler(event, layer){
     highlightBuilding(event.feature, layer);}
   else{
     console.log(event.feature.getGeometry().getType())}
-}
-
-function highlightMarker(){
-
 }
 
 function highlightBuilding(feature, layer){
@@ -366,11 +432,18 @@ function labsCallback(json){
 // TODO: get rid of name
 function show_overlay(name,requested) {
   console.log("show " +name);
-
-    if (overlay_state!=requested){
+    if (overlay_content!=requested){
        update_overlay(name, requested);
      }
+     overlay_state = true;
     document.getElementById("overlay").style.display = "flex";
+
+}
+
+function hide_overlay() {
+  document.getElementById("overlay").style.display = "none";
+  overlay_state = false;
+  //not needed for now? maybe seperate falgs
 }
 
 function update_overlay(name,requested){
@@ -393,60 +466,157 @@ function update_overlay(name,requested){
   .always(function() {
     console.log( "complete" );
   });
-      overlay_state = requested;
+      overlay_content = requested;
 
-}
-function set_contents(path, dict){
-  //document.getElementById("header_text").innerHTML=name;
-  document.getElementById("cover_img").src =path+"img/"+dict.cover;
-  document.getElementById("article").innerHTML;
-  populate_links(path, dict.links);
-  //md.render('!!!include('+path+"md/"+dict.main+')!!!');
 
 }
 
 function set_placeholder(){
   document.getElementById("cover_img").src
-                    = "res/img/portrait-placeholder.jpeg";
+  = "res/img/portrait-placeholder.jpeg";
 
   document.getElementById("article").innerHTML = "Article";
- //TODO: getJSON only when the JSON is not saved
- // setContents after that
- // clean memory when not focused
- // make the contents[label] = {} a timed queue?
+  $("#personal").hide();
+  $("#links").hide();
+
+  //TODO: getJSON only when the JSON is not saved
+  // setContents after that
+  // clean memory when not focused
+  // make the contents[label] = {} a timed queue?
 }
 
-function hide_overlay() {
-    document.getElementById("overlay").style.display = "none";
-    // overlay_state = false;
-          //not needed for now? maybe seperate falgs
+function set_contents(path, dict){
+  //document.getElementById("header_text").innerHTML=name;
+  //check conetn for exists?
+  document.getElementById("cover_img").src =path+"img/"+dict.cover;
+  document.getElementById("article").innerHTML;
+  populate_links(path, dict.links);
+  fill_info(dict);
+  load_internal(path+'html/'+dict["main"]);
+  // fill_carousel(path+"img/",dict["photos"]);
+  $("#article>a").click(function(e){e.preventDefault(); window.open(a.href, target='_blank'); return false;});
+  //md.render('!!!include('+path+"md/"+dict.main+')!!!');
+}
+
+function load_internal(href){
+  fetch(href)
+  .then(data => data.text())
+  .then(html => document.getElementById('article').innerHTML = html);
 
 }
-functionjPopulate_links(path, linkmap){
 
-$('#links').append("<a class=\"sidelink\" >hey!</a>");
 
+function fill_info(dict){
+  fields=["room", "building", "phone", "email"];
+  // console.log("contact.info");
+  for(var x in fields){
+    key=fields[x];
+    val=dict[key];
+    // console.log(key +": " +val);
+    if (dict.hasOwnProperty(key)) {
+      //TODO: add mailto here. if key=email
+      if (val){
+        $('span#'+key).html(val);
+        $('.contact#'+key).show();
+      }
+      else{
+        $('.contact#'+key).hide();
+      }
+    }
+    else{
+      $('.contact#'+key).hide();
+    }
+  }
+  $("#personal").show();
 }
+
+    function jPopulate_links(path, linkmap){
+
+    $('#links').append("<a class=\"sidelink\" >hey!</a>");
+
+    }
 
 function populate_links(path, linkmap){
     div_links=document.getElementById("links")
-    console.log(div_links.className)
+    //console.log(div_links.className)
     c=0;
-    $('.sidelink').remove();
+    $('#sidelink').remove();
 
     for (var key in linkmap) {
       if (linkmap.hasOwnProperty(key)) {
-        console.log(key + " -> " + linkmap[key]);
-        var a = document.createElement('a');
-        var txt = document.createTextNode(key);
-        a.setAttribute("id", "link"+c);
-        a.className="sidelink";
-        a.appendChild(txt);
-        a.title = key;
-        //md check here;
-        a.href = linkmap[key];
+        //console.log(key + " -> " + linkmap[key]);
+        var a = set_link(a,path,key, linkmap[key]);
+        a.setAttribute("id", "sidelink");
         div_links.appendChild(a);
         c+=1;
       }
     }
+    $("#links").show();
+}
+// can we handle this with just the json value and setting onclick handle
+//$(this).addClass('local');
+function set_link(a,path, key, uri){
+  var a = document.createElement('a');
+  var txt = document.createTextNode(key);
+  a.appendChild(txt);
+  a.title = key;
+  //md check here;
+  a.href = uri;
+  //ternary this + jquery?
+  if(location.hostname === a.hostname || !a.hostname.length){
+    a.href= path+'html/'+uri;
+    a.className="internal";
+  }
+  else {
+    a.className="external";
+  }
+    a.onclick=function (e) {
+            return handle_link(a);
+  };
+  return a;
+}
+
+function handle_link(a){
+  console.log(a.className);
+  if(a.className=="external"){
+      window.open(a.href, target='_blank');
+
+   }
+   else if(a.className=="internal") {
+       //className
+       load_internal(a.href);
+     }
+     return false;
+
+}
+
+function fill_carousel(path, images){
+    slides=document.getElementById("slides")
+    //console.log(div_links.className)
+    c=0;
+    $('.slide').remove();
+    if(Object.keys(images).length === 0){
+      $('footer').hide();
+    }
+    else{
+      for (var img_path in images) {
+        if (images.hasOwnProperty(fig)) {
+          //console.log(key + " -> " + linkmap[key]);
+          var li = document.createElement('li').className("slide");
+          var fig = document.createElement('figure');
+          var a = document.createElement('a');
+          var img = document.createElement('img');
+          a.href=images[img_path];
+          img.src=path+img_path; //TODO: this will need link handling
+          img.alt=img_path;
+          slides.appendChild(li);
+          li.appendChild(fig);
+          fig.appendChild(a);
+          a.appendChild(img);
+
+          c+=1;
+      }
+    }
+    $('footer').show();
+  }
 }

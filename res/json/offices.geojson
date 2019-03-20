@@ -63,7 +63,8 @@
       "properties": {
         "name": "Jie Fu",
         "building": "85p",
-        "class": "office"
+        "class": "office",
+        "label": "jiefu"
       }
     },
     {
@@ -79,7 +80,8 @@
       "properties": {
         "name": "Jing Xiao",
         "building": "85p",
-        "class": "office"
+        "class": "office",
+        "label": "xiao"
       }
     },
     {
@@ -95,7 +97,8 @@
       "properties": {
         "name": "Marko Popovic",
         "building": "85p",
-        "class": "office"
+        "class": "office",
+        "label": "popovic"
       }
     },
     {
@@ -127,7 +130,8 @@
       "properties": {
         "name": "Hide",
         "building": "85p",
-        "class": "office"
+        "class": "office",
+        "label":"hide"
       }
     },
     {
@@ -192,6 +196,23 @@
         "name": "Craig Putnam",
         "building": "85p",
         "class": "office"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.808012,
+          42.274354,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Cagdas Onal",
+        "building": "higgins",
+        "class": "office",
+        "label": "onal"
       }
     },
     {

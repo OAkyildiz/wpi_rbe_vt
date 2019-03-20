@@ -1,13 +1,13 @@
 {
-  "name": "Gregory S. Fischer",
-  "main": "fisher.md",
+  "name": "Gregory S. Fischer,  Ph.D.",
+  "main": "fischer.html",
   "cover":"fischer.jpg",
   "building": "85 Prescott",
-  "room": "234, AIM Lab",
-  "email": "gsfischer@wpi.edu",
-  "phone": "5080000000",
+  "room": "Room 234, AIM Lab",
+  "email": "gfischer@wpi.edu",
+  "phone": "508-831-5261",
   "links": {"AIMLab": "http://aimlab.wpi.edu/",
-            "Publications": "publications.md"
+            "Publications": "publications.html"
           },
 
   "photos": {"AIM_Fischer_Su_Neurosurgery_Robot.jpg":"",
