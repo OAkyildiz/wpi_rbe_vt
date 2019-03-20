@@ -1,5 +1,5 @@
 # wpi_rbe_vt
-Virtual Tour Map for Robotics Program Engineering at WPI. Contains office and lab lcoations as well info overlays.
+Virtual Tour Map for Robotics Program Engineering at WPI. Contains office and lab locations as well info overlays.
 
 ## Test Run
 In order to host the website in a local address:
